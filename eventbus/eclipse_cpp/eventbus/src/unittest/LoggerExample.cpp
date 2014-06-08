@@ -1,36 +1,38 @@
-
 #include <LoggerExample.hpp>
 
-   LoggerExample::LoggerExample() {
+static const int maxQueueSize = 100;
 
-   }
+LoggerExample::LoggerExample() {
 
-   void LoggerExample::sinkEvent(EBEvent event) {
+}
 
+void LoggerExample::sinkEvent(EBEvent event) {
+
+   if (rcvQueue.size() < maxQueueSize)
       rcvQueue.push(event);
-   }
+}
 
-   bool LoggerExample::hasEvents() {
+bool LoggerExample::hasEvents() {
 
-      return rcvQueue.size() > 0;
-   }
+   return rcvQueue.size() > 0;
+}
 
-   void LoggerExample::processEvents() {
+void LoggerExample::processEvents() {
 
-      int size = rcvQueue.size();
+   int size = rcvQueue.size();
 
-      for (int i = 0; i < size; i++) {
+   for (int i = 0; i < size; i++) {
 
-         EBEvent event;
+      EBEvent event;
 
-         if (rcvQueue.front(event)) {
+      if (rcvQueue.front(event)) {
 
-            std::cout << "\nEvent info:" << std::endl;
-            std::cout << "publisherID = " << event.publisherID << std::endl;
-            std::cout << "eventID = " << event.eventID << std::endl;
-            std::cout << "eventCatType = "<< event.eventCatType << std::endl;
-            std::cout << "eventDefType = " << event.eventDefType << std::endl;
-            std::cout << "eventData = " << event.eventData << std::endl;
-         }
+         std::cout << "\nEvent info:" << std::endl;
+         std::cout << "publisherID = " << event.publisherID << std::endl;
+         std::cout << "eventID = " << event.eventID << std::endl;
+         std::cout << "eventCatType = " << event.eventCatType << std::endl;
+         std::cout << "eventDefType = " << event.eventDefType << std::endl;
+         std::cout << "eventData = " << event.eventData << std::endl;
       }
    }
+}
