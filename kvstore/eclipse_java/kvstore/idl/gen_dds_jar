@@ -1,0 +1,28 @@
+#!/bin/bash
+source ~/bash_profile
+
+# Generate OpenSplice DDS java files
+echo "Generating OpenSplice DDS java files"
+idlpp -S -l java -d ./ DDSKVStore.idl 
+
+# Prepare class directory
+mkdir -p class
+rm -rf class/*
+
+# Compile OpenSplice DDS java files
+javac -source 1.6 -target 1.6 -cp /usr/local/HDE/x86.linux2.6/jar/dcpssaj.jar -d ./class DDSKVStore/*.java
+
+# Generate jar file
+mkdir -p ../lib > /dev/null 2>&1
+cd class
+echo "Manifest-Version: 1.0" > tmp
+jar cmf tmp ../../lib/DDSKVStore.jar DDSKVStore
+rm tmp
+cd ..
+
+# Cleanup
+rm -rf class
+rm -rf DDSKVStore
+
+echo
+echo "DDSKVStore.jar created"

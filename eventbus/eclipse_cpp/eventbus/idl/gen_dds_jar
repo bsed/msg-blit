@@ -1,0 +1,8 @@
+#!/bin/bash
+source ~/bash_profile
+
+# Generate OpenSplice DDS cpp files
+echo "Generating OpenSplice DDS cpp files"
+mkdir -p ../src/dds_generated/DDSEventChannel > /dev/null 2>&1
+rm -rf ../src/dds_generated/DDSEventChannel/*
+idlpp -S -l cpp -d ../src/dds_generated/DDSEventChannel DDSEventChannel.idl 

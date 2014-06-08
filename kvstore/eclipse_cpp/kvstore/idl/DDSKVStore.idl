@@ -1,0 +1,57 @@
+
+module DDSKVStore
+{   
+    const long MAX_KVS_SIZE = 16;
+    const long MAX_BUFFER_SIZE = 4096;
+    
+    enum DBASE_Action {
+        
+        DBASE_SET        // value = 0
+    };
+
+    enum TYPE_Info {
+
+        TYPE_INT8,       // value = 0
+        TYPE_INT16,      // value = 1
+        TYPE_INT32,      // value = 2
+        TYPE_INT64,      // value = 3
+        TYPE_FLOAT,      // value = 4
+        TYPE_DOUBLE,     // value = 5
+        TYPE_BOOL,       // value = 6
+        TYPE_STRING,     // value = 7
+        TYPE_BYTES       // value = 8
+    };
+    
+    enum ARCH_Info {
+    	    
+    	ARCH_BIG_ENDIAN,      // value = 0
+    	ARCH_LITTLE_ENDIAN    // value = 1
+    };
+
+    typedef sequence<octet, MAX_BUFFER_SIZE> ByteBuf;
+        
+    struct KeyValue {
+    	    
+        string key;
+        TYPE_Info typeInfo;
+        short numberElements;
+        ByteBuf byteBuffer;
+    };
+    #pragma keylist KeyValue
+    
+    typedef sequence<KeyValue, MAX_KVS_SIZE> KeyValueSet;
+        
+    // *** Begin DDS KVStore API Section ***
+
+    struct Transaction {
+        
+    	long publisherID;
+    	long long timeStamp;
+        DBASE_Action action;
+        ARCH_Info systemByteOrder;
+        KeyValueSet keyValueSet;
+    };
+    #pragma keylist Transaction publisherID
+
+    // *** End DDS KVStore API Section ***
+};

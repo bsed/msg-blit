@@ -1,0 +1,29 @@
+
+module DDSEventChannel
+{   
+    // Event categories
+    enum EventCategories
+    {
+        CATEGORY_UNDEFINED,                               // value = 0
+        CATEGORY_LIGHTSWITCH				  // value = 1 
+    };
+
+    // Category light switch event definitions
+    enum CategoryLightSwitchDefinition
+    {
+        LIGHTSWITCH_UNDEFINED,                            // value = 0
+        LIGHTSWITCH_OFF,                       	          // value = 1
+        LIGHTSWITCH_ON                                    // value = 2
+    };
+
+    // Event container definition 
+    struct EventContainer
+    {
+        long publisherID;    // Unique DDS publisher identifier
+        long eventID;        // Unique event identifier
+        short eventCatType;  // Event category type (see category enumerations)
+        short eventDefType;  // Event definition type (see event enumerations)
+        string eventData;    // Event data
+    };
+    #pragma keylist EventContainer publisherID
+};
