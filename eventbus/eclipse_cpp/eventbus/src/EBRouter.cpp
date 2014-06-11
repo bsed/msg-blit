@@ -61,7 +61,7 @@ void EBRouter::publishEvent(EBEvent event, DistType distType) {
 	}
 }
 
-void EBRouter::startReq() {
+void EBRouter::start() {
 
    ebRouterThread = boost::thread(&EBRouter::run, this);
 }

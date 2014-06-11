@@ -79,12 +79,6 @@ public class EBRouter extends Thread {
       }
    }
 
-   // Start request that must be called prior to any other methods
-   public void startReq() {
-
-      start();
-   }
-
    // Shutdown request
    public void shutdownReq() {
 

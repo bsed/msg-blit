@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
    LoggerExample* logger = new LoggerExample();
 
    router->addSubscriber("logger", logger);
-   router->startReq();
+   router->start();
 
    eventEmitter1->start();
    eventEmitter2->start();

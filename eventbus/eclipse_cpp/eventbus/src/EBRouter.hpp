@@ -58,7 +58,7 @@ public:
    void publishEvent(EBEvent event, DistType distType);
 
    // Start request that must be called prior to any other methods
-   void startReq();
+   void start();
 
    // Shutdown request
    void shutdownReq();
