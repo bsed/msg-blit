@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
       std::cout << std::endl;
 
       // ***********  Start of the value tests ***********
-      
+
       int8_t byteRead;
       byteRead = database->getInt8Value("pig");
       std::cout << (int) byteRead << std::endl;

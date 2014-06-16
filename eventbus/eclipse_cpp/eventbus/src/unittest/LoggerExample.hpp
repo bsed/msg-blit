@@ -4,7 +4,7 @@
 #include <EBSubscriber.hpp>
 #include <SharedQueue.hpp>
 
-class LoggerExample : public EBSubscriber {
+class LoggerExample: public EBSubscriber {
 
 public:
 

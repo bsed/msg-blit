@@ -295,7 +295,7 @@ double KVStore::getDoubleValue(std::string key) {
 
 void KVStore::setBoolValue(std::string key, bool value, DistType varType) {
 
-   uint8_t byteValue = (uint8_t) ((value == false) ? 0 : 1);
+   uint8_t byteValue = (uint8_t)((value == false) ? 0 : 1);
    KVSObject kvsObject;
 
    kvsObject.key = key;
@@ -908,7 +908,7 @@ void KVStore::run() {
       }
 
       transactionDataReader->return_loan(transactionSeq, infoSeq);
-      
+
       publishPending();
    }
 

@@ -29,7 +29,7 @@
 class EBEvent {
 
 public:
-	
+
    int publisherID;    		// Unique DDS publisher identifier
    int eventID;        		// Unique event identifier
    short eventCatType; 		// Event category type (see category enumerations)

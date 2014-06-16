@@ -47,7 +47,7 @@ public:
 
    // Start request that must be called prior to any other methods
    void startReq();
-   
+
    // Shutdown request
    void shutdownReq();
 
@@ -119,7 +119,7 @@ private:
    void init();
    void run();
    void publishPending();
-   
+
    boost::thread kvStoreThread;
 
    DDS::DataReader_ptr dataReader;
@@ -135,7 +135,7 @@ private:
    std::string partition;
    int publisherID;
 
-   DDSKVStore::ARCH_Info systemByteOrder;   
+   DDSKVStore::ARCH_Info systemByteOrder;
    SharedQueue<KVSObject> pubQueue;
    std::map<std::string, KVSObject> dataStore;
 };
