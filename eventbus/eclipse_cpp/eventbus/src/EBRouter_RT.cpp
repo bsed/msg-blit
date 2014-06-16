@@ -29,6 +29,17 @@ EBRouter::EBRouter(std::string partition, int publisherID) {
    this->publisherID = publisherID;
 }
 
+void EBRouter::publishEvent(EBEvent &event) {
+
+   pubEventContainer.publisherID = event.publisherID;
+   pubEventContainer.eventID = event.eventID;
+   pubEventContainer.eventCatType = event.eventCatType;
+   pubEventContainer.eventDefType = event.eventDefType;
+   pubEventContainer.eventData = event.eventData.c_str();
+
+   transactionDataWriter->write(pubEventContainer, DDS::HANDLE_NIL);
+}
+
 void EBRouter::init() {
 
    DDS::DomainId_t myDomain = NULL;
@@ -139,15 +150,4 @@ void EBRouter::receiveEvents(std::vector<EBEvent> &eventContainer) {
    }
 
    transactionDataReader->return_loan(transactionSeq, infoSeq);
-}
-
-void EBRouter::publishEvent(EBEvent &event) {
-
-   pubEventContainer.publisherID = event.publisherID;
-   pubEventContainer.eventID = event.eventID;
-   pubEventContainer.eventCatType = event.eventCatType;
-   pubEventContainer.eventDefType = event.eventDefType;
-   pubEventContainer.eventData = event.eventData.c_str();
-
-   transactionDataWriter->write(pubEventContainer, DDS::HANDLE_NIL);
 }

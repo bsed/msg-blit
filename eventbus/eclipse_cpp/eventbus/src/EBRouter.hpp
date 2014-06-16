@@ -55,7 +55,7 @@ public:
          EBSubscriber *eventSubscriber);
 
    // Publish event
-   void publishEvent(EBEvent event, DistType distType);
+   void publishEvent(EBEvent &event, DistType distType);
 
    // Start request that must be called prior to any other methods
    void start();
@@ -70,7 +70,7 @@ private:
 
    void init();
    void run();
-   void notifySubscribers(EBEvent event);
+   void notifySubscribers(EBEvent &event);
    void publishPending();
 
    boost::thread ebRouterThread;

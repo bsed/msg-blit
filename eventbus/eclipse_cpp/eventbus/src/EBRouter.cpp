@@ -22,7 +22,6 @@
  */
 
 #include "EBRouter.hpp"
-#include <string>
 
 EBRouter::EBRouter(std::string partition, int publisherID) {
 
@@ -50,7 +49,7 @@ void EBRouter::removeSubscriber(std::string subscriberName,
 }
 
 // Publish event
-void EBRouter::publishEvent(EBEvent event, DistType distType) {
+void EBRouter::publishEvent(EBEvent &event, DistType distType) {
 
    event.publisherID = publisherID;
 
@@ -201,7 +200,7 @@ void EBRouter::run() {
    threadHasComplete = true;
 }
 
-void EBRouter::notifySubscribers(EBEvent event) {
+void EBRouter::notifySubscribers(EBEvent &event) {
 
    for (subIterator = subscribers.begin(); subIterator != subscribers.end();
          subIterator++) {

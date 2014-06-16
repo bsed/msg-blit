@@ -72,7 +72,7 @@ public class UnitTest {
 				true, true };
 		boolean boolArrayTest2[] = new boolean[] {};
 
-		database.startReq();
+		database.start();
 
 		database.setInt8Value("pig", byteTest2, DistType.SHARED);
 		database.setInt16Value("cat", shortTest2, DistType.SHARED);
