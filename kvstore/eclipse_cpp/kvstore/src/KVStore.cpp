@@ -22,7 +22,6 @@
  */
 
 #include "KVStore.hpp"
-#include <string>
 #include <sys/time.h>
 #include <ByteSwapper.hpp>
 
@@ -38,7 +37,7 @@ KVStore::KVStore(std::string partition, int publisherID) {
    init();
 }
 
-void KVStore::startReq() {
+void KVStore::start() {
 
    kvStoreThread = boost::thread(&KVStore::run, this);
 }

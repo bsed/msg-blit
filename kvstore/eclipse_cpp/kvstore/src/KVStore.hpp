@@ -45,8 +45,8 @@ public:
    // Create object using specified partition and publisherID
    KVStore(std::string partition, int publisherID);
 
-   // Start request that must be called prior to any other methods
-   void startReq();
+   // Start that must be called prior to any other methods
+   void start();
 
    // Shutdown request
    void shutdownReq();

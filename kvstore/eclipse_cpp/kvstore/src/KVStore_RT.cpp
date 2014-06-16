@@ -22,7 +22,6 @@
  */
 
 #include "KVStore_RT.hpp"
-#include <string>
 #include <sys/time.h>
 #include <ByteSwapper.hpp>
 

@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
          { true, true, true, true, false, false, false, false };
    bool boolArrayTest2[] = { };
 
-   database->startReq();
+   database->start();
 
    database->setInt8Value("pig", byteTest2, KVStore::SHARED);
    database->setInt16Value("cat", shortTest2, KVStore::SHARED);

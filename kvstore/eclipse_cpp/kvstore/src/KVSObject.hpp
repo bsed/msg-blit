@@ -25,6 +25,8 @@
 #define KVS_OBJECT_HPP_
 
 #include <DDSKVStore/DDSKVStore.h>
+#include <string>
+#include <vector>
 
 class KVSObject {
 
