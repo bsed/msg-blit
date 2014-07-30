@@ -975,6 +975,8 @@ public class KVStore extends Thread {
          publishPending();
       }
 
+      waitSet.detach_condition(readCondition);
+      
       threadHasComplete = true;
    }
    

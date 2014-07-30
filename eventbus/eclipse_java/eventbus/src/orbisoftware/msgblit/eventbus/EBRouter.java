@@ -226,6 +226,8 @@ public class EBRouter extends Thread {
 
          publishPending();
       }
+      
+      waitSet.detach_condition(readCondition);
 
       threadHasComplete = true;
    }
