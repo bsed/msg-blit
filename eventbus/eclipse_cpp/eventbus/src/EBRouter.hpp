@@ -77,7 +77,7 @@ private:
 
    DDS::DataReader_ptr dataReader;
    DDS::ReadCondition_ptr readCondition;
-   DDS::WaitSet_ptr waitSet;
+   DDS::WaitSet_var waitSet;
 
    DDSEventChannel::EventContainerDataReader_ptr transactionDataReader;
    DDSEventChannel::EventContainerDataWriter_ptr transactionDataWriter;

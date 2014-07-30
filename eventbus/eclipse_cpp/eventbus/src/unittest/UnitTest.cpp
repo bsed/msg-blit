@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
          while (!router->threadIsComplete())
             boost::this_thread::sleep(boost::posix_time::milliseconds(200));
 
-         abort();
+         exit(0);
       }
 
       boost::this_thread::sleep(boost::posix_time::milliseconds(1000));

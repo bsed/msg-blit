@@ -50,6 +50,7 @@
 									<listOptionValue builtIn="false" value="dcpssacpp"/>
 									<listOptionValue builtIn="false" value="ddsdatabase"/>
 									<listOptionValue builtIn="false" value="ddsos"/>
+									<listOptionValue builtIn="false" value="ddsutil"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.779459715" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/usr/local/HDE/x86.linux2.6/lib"/>
@@ -139,5 +140,12 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/eventbus"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/eventbus"/>
+		</configuration>
+	</storageModule>
 </cproject>

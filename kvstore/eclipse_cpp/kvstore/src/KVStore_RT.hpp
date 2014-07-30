@@ -117,7 +117,6 @@ private:
 
    DDS::DataReader_ptr dataReader;
    DDS::ReadCondition_ptr readCondition;
-   DDS::WaitSet_ptr waitSet;
 
    DDSKVStore::TransactionDataReader_ptr transactionDataReader;
    DDSKVStore::TransactionDataWriter_ptr transactionDataWriter;

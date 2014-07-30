@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lboost_thread -lboost_system -ldcpsgapi -ldcpssacpp -lddsdatabase -lddsos
+LIBS := -lboost_thread -lboost_system -ldcpsgapi -ldcpssacpp -lddsdatabase -lddsos -lddsutil
 

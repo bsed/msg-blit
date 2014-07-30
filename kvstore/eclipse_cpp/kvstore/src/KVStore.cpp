@@ -911,6 +911,9 @@ void KVStore::run() {
       publishPending();
    }
 
+   waitSet->detach_condition(readCondition);
+   waitSet = 0;
+
    threadHasComplete = true;
 }
 

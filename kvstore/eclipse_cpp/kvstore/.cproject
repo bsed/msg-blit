@@ -55,6 +55,7 @@
 									<listOptionValue builtIn="false" value="dcpssacpp"/>
 									<listOptionValue builtIn="false" value="ddsdatabase"/>
 									<listOptionValue builtIn="false" value="ddsos"/>
+									<listOptionValue builtIn="false" value="ddsutil"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.368197821" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
