@@ -898,7 +898,7 @@ public class KVStore extends Thread {
          transactionDataReader.take_w_condition(transactionSeqHolder, infoSeq,
                DDS.LENGTH_UNLIMITED.value, readCondition);
 
-         if (infoSeq.value.length > 0) {
+         if (infoSeq.value != null && infoSeq.value.length > 0) {
 
             for (int i = 0; i < transactionSeqHolder.value.length; i++) {
 

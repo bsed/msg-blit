@@ -205,7 +205,7 @@ public class EBRouter extends Thread {
          transactionDataReader.take_w_condition(eventSeqHolder, infoSeq,
                DDS.LENGTH_UNLIMITED.value, readCondition);
 
-         if (infoSeq.value.length > 0) {
+         if (infoSeq.value != null && infoSeq.value.length > 0) {
 
             for (int i = 0; i < eventSeqHolder.value.length; i++) {
 
