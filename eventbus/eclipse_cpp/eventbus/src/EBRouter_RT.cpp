@@ -22,6 +22,7 @@
  */
 
 #include "EBRouter_RT.hpp"
+#include <iostream>
 
 EBRouter::EBRouter(std::string partition, int publisherID) {
 
