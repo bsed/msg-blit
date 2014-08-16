@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import orbisoftware.msgblit.kvstore.util.ByteSwapper;
 
-
 import DDSKVStore.*;
 
 public class KVStore extends Thread {
@@ -883,7 +882,7 @@ public class KVStore extends Thread {
       waitSet = new DDS.WaitSet();
       waitSet.attach_condition(readCondition);
    }
-   
+
    public void run() {
 
       DDSKVStore.TransactionSeqHolder transactionSeqHolder = new DDSKVStore.TransactionSeqHolder();
@@ -902,69 +901,73 @@ public class KVStore extends Thread {
 
             for (int i = 0; i < transactionSeqHolder.value.length; i++) {
 
-               rcvTransaction = transactionSeqHolder.value[i];
+               if (infoSeq.value[i].valid_data) {
 
-               // Only update the dataStore from transactions originating
-               // from other kvstore publishers
-               if ((rcvTransaction.action == DBASE_Action.DBASE_SET)
-                     && rcvTransaction.publisherID != publisherID) {
+                  rcvTransaction = transactionSeqHolder.value[i];
 
-                  for (int j = 0; j < rcvTransaction.keyValueSet.length; j++) {
+                  // Only update the dataStore from transactions originating
+                  // from other kvstore publishers
+                  if ((rcvTransaction.action == DBASE_Action.DBASE_SET)
+                        && rcvTransaction.publisherID != publisherID) {
 
-                     KVSObject kvsObject = new KVSObject();
+                     for (int j = 0; j < rcvTransaction.keyValueSet.length; j++) {
 
-                     kvsObject.key = rcvTransaction.keyValueSet[j].key;
-                     kvsObject.typeInfo = rcvTransaction.keyValueSet[j].typeInfo;
-                     kvsObject.numberElements = rcvTransaction.keyValueSet[j].numberElements;
-                     kvsObject.byteBuffer = rcvTransaction.keyValueSet[j].byteBuffer;
+                        KVSObject kvsObject = new KVSObject();
 
-                     // Perform byte swapping (if required)
-                     if (rcvTransaction.systemByteOrder != systemByteOrder) {
+                        kvsObject.key = rcvTransaction.keyValueSet[j].key;
+                        kvsObject.typeInfo = rcvTransaction.keyValueSet[j].typeInfo;
+                        kvsObject.numberElements = rcvTransaction.keyValueSet[j].numberElements;
+                        kvsObject.byteBuffer = rcvTransaction.keyValueSet[j].byteBuffer;
 
-                        switch (kvsObject.typeInfo.value()) {
+                        // Perform byte swapping (if required)
+                        if (rcvTransaction.systemByteOrder != systemByteOrder) {
 
-                        case TYPE_Info._TYPE_INT16:
+                           switch (kvsObject.typeInfo.value()) {
 
-                           if (kvsObject.numberElements == 1)
-                              kvsObject.byteBuffer = ByteSwapper
-                                    .swapTwoBytes(kvsObject.byteBuffer);
-                           else
-                              kvsObject.byteBuffer = ByteSwapper
-                                    .swapTwoByteArray(kvsObject.byteBuffer,
-                                          kvsObject.numberElements);
-                           break;
+                           case TYPE_Info._TYPE_INT16:
 
-                        case TYPE_Info._TYPE_INT32:
-                        case TYPE_Info._TYPE_FLOAT:
+                              if (kvsObject.numberElements == 1)
+                                 kvsObject.byteBuffer = ByteSwapper
+                                       .swapTwoBytes(kvsObject.byteBuffer);
+                              else
+                                 kvsObject.byteBuffer = ByteSwapper
+                                       .swapTwoByteArray(kvsObject.byteBuffer,
+                                             kvsObject.numberElements);
+                              break;
 
-                           if (kvsObject.numberElements == 1)
-                              kvsObject.byteBuffer = ByteSwapper
-                                    .swapFourBytes(kvsObject.byteBuffer);
-                           else
-                              kvsObject.byteBuffer = ByteSwapper
-                                    .swapFourByteArray(kvsObject.byteBuffer,
-                                          kvsObject.numberElements);
-                           break;
+                           case TYPE_Info._TYPE_INT32:
+                           case TYPE_Info._TYPE_FLOAT:
 
-                        case TYPE_Info._TYPE_INT64:
-                        case TYPE_Info._TYPE_DOUBLE:
+                              if (kvsObject.numberElements == 1)
+                                 kvsObject.byteBuffer = ByteSwapper
+                                       .swapFourBytes(kvsObject.byteBuffer);
+                              else
+                                 kvsObject.byteBuffer = ByteSwapper
+                                       .swapFourByteArray(kvsObject.byteBuffer,
+                                             kvsObject.numberElements);
+                              break;
 
-                           if (kvsObject.numberElements == 1)
-                              kvsObject.byteBuffer = ByteSwapper
-                                    .swapEightBytes(kvsObject.byteBuffer);
-                           else
-                              kvsObject.byteBuffer = ByteSwapper
-                                    .swapEightByteArray(kvsObject.byteBuffer,
-                                          kvsObject.numberElements);
-                           break;
+                           case TYPE_Info._TYPE_INT64:
+                           case TYPE_Info._TYPE_DOUBLE:
 
-                        default:
-                           break;
+                              if (kvsObject.numberElements == 1)
+                                 kvsObject.byteBuffer = ByteSwapper
+                                       .swapEightBytes(kvsObject.byteBuffer);
+                              else
+                                 kvsObject.byteBuffer = ByteSwapper
+                                       .swapEightByteArray(
+                                             kvsObject.byteBuffer,
+                                             kvsObject.numberElements);
+                              break;
 
+                           default:
+                              break;
+
+                           }
                         }
-                     }
 
-                     dataStore.put(kvsObject.key, kvsObject);
+                        dataStore.put(kvsObject.key, kvsObject);
+                     }
                   }
                }
             }
@@ -976,16 +979,16 @@ public class KVStore extends Thread {
       }
 
       waitSet.detach_condition(readCondition);
-      
+
       threadHasComplete = true;
    }
-   
+
    private void publishPending() {
 
       int size = pubQueue.size();
 
       if (size > 0) {
-         
+
          if (size > DDSKVStore.MAX_KVS_SIZE.value)
             size = DDSKVStore.MAX_KVS_SIZE.value;
 
@@ -1000,7 +1003,7 @@ public class KVStore extends Thread {
             KVSObject kvsObject = pubQueue.poll();
 
             if (kvsObject != null) {
-               
+
                pubTransaction.keyValueSet[i] = new KeyValue();
                pubTransaction.keyValueSet[i].key = kvsObject.key;
                pubTransaction.keyValueSet[i].typeInfo = kvsObject.typeInfo;

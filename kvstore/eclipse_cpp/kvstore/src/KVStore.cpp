@@ -837,70 +837,74 @@ void KVStore::run() {
 
          for (unsigned int i = 0; i < transactionSeq.length(); i++) {
 
-            rcvTransaction = transactionSeq[i];
+            if (infoSeq[i].valid_data) {
 
-            // Only update the dataStore from transactions originating
-            // from other kvstore publishers
-            if ((rcvTransaction.action == DDSKVStore::DBASE_SET)
-                  && rcvTransaction.publisherID != publisherID) {
+               rcvTransaction = transactionSeq[i];
 
-               for (unsigned int j = 0; j < rcvTransaction.keyValueSet.length();
-                     j++) {
+               // Only update the dataStore from transactions originating
+               // from other kvstore publishers
+               if ((rcvTransaction.action == DDSKVStore::DBASE_SET)
+                     && rcvTransaction.publisherID != publisherID) {
 
-                  int bufferLength =
-                        rcvTransaction.keyValueSet[j].byteBuffer.length();
-                  KVSObject kvsObject;
+                  for (unsigned int j = 0;
+                        j < rcvTransaction.keyValueSet.length(); j++) {
 
-                  kvsObject.key = rcvTransaction.keyValueSet[j].key;
-                  kvsObject.typeInfo = rcvTransaction.keyValueSet[j].typeInfo;
-                  kvsObject.numberElements =
-                        rcvTransaction.keyValueSet[j].numberElements;
-                  kvsObject.byteBuffer.resize(bufferLength);
-                  memcpy(&kvsObject.byteBuffer[0],
-                        &rcvTransaction.keyValueSet[j].byteBuffer[0],
-                        bufferLength);
+                     int bufferLength =
+                           rcvTransaction.keyValueSet[j].byteBuffer.length();
+                     KVSObject kvsObject;
 
-                  // Perform byte swapping (if required)
-                  if (rcvTransaction.systemByteOrder != systemByteOrder) {
+                     kvsObject.key = rcvTransaction.keyValueSet[j].key;
+                     kvsObject.typeInfo =
+                           rcvTransaction.keyValueSet[j].typeInfo;
+                     kvsObject.numberElements =
+                           rcvTransaction.keyValueSet[j].numberElements;
+                     kvsObject.byteBuffer.resize(bufferLength);
+                     memcpy(&kvsObject.byteBuffer[0],
+                           &rcvTransaction.keyValueSet[j].byteBuffer[0],
+                           bufferLength);
 
-                     int8_t* value_ptr = (int8_t *) &kvsObject.byteBuffer[0];
+                     // Perform byte swapping (if required)
+                     if (rcvTransaction.systemByteOrder != systemByteOrder) {
 
-                     switch (kvsObject.typeInfo) {
+                        int8_t* value_ptr = (int8_t *) &kvsObject.byteBuffer[0];
 
-                     case DDSKVStore::TYPE_INT16:
+                        switch (kvsObject.typeInfo) {
 
-                        if (kvsObject.numberElements == 1)
-                           ByteSwapper::swapTwoBytes(value_ptr);
-                        else
-                           ByteSwapper::swapTwoByteArray(value_ptr,
-                                 kvsObject.numberElements);
-                        break;
+                        case DDSKVStore::TYPE_INT16:
 
-                     case DDSKVStore::TYPE_INT32:
-                     case DDSKVStore::TYPE_FLOAT:
+                           if (kvsObject.numberElements == 1)
+                              ByteSwapper::swapTwoBytes(value_ptr);
+                           else
+                              ByteSwapper::swapTwoByteArray(value_ptr,
+                                    kvsObject.numberElements);
+                           break;
 
-                        if (kvsObject.numberElements == 1)
-                           ByteSwapper::swapFourBytes(value_ptr);
-                        else
-                           ByteSwapper::swapFourByteArray(value_ptr,
-                                 kvsObject.numberElements);
-                        break;
+                        case DDSKVStore::TYPE_INT32:
+                        case DDSKVStore::TYPE_FLOAT:
 
-                     case DDSKVStore::TYPE_INT64:
-                     case DDSKVStore::TYPE_DOUBLE:
-                        if (kvsObject.numberElements == 1)
-                           ByteSwapper::swapEightBytes(value_ptr);
-                        else
-                           ByteSwapper::swapEightByteArray(value_ptr,
-                                 kvsObject.numberElements);
-                        break;
+                           if (kvsObject.numberElements == 1)
+                              ByteSwapper::swapFourBytes(value_ptr);
+                           else
+                              ByteSwapper::swapFourByteArray(value_ptr,
+                                    kvsObject.numberElements);
+                           break;
 
-                     default:
-                        break;
+                        case DDSKVStore::TYPE_INT64:
+                        case DDSKVStore::TYPE_DOUBLE:
+                           if (kvsObject.numberElements == 1)
+                              ByteSwapper::swapEightBytes(value_ptr);
+                           else
+                              ByteSwapper::swapEightByteArray(value_ptr,
+                                    kvsObject.numberElements);
+                           break;
+
+                        default:
+                           break;
+                        }
                      }
-                  }
 
-                  dataStore[kvsObject.key] = kvsObject;
+                     dataStore[kvsObject.key] = kvsObject;
+                  }
                }
             }
          }

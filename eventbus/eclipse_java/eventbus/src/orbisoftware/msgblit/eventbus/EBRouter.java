@@ -209,16 +209,19 @@ public class EBRouter extends Thread {
 
             for (int i = 0; i < eventSeqHolder.value.length; i++) {
 
-               EBEvent event = new EBEvent();
-               rcvEventContainer = eventSeqHolder.value[i];
+               if (infoSeq.value[i].valid_data) {
 
-               event.publisherID = rcvEventContainer.publisherID;
-               event.eventID = rcvEventContainer.eventID;
-               event.eventCatType = rcvEventContainer.eventCatType;
-               event.eventDefType = rcvEventContainer.eventDefType;
-               event.eventData = rcvEventContainer.eventData;
+                  EBEvent event = new EBEvent();
+                  rcvEventContainer = eventSeqHolder.value[i];
 
-               notifySubscribers(event);
+                  event.publisherID = rcvEventContainer.publisherID;
+                  event.eventID = rcvEventContainer.eventID;
+                  event.eventCatType = rcvEventContainer.eventCatType;
+                  event.eventDefType = rcvEventContainer.eventDefType;
+                  event.eventData = rcvEventContainer.eventData;
+
+                  notifySubscribers(event);
+               }
             }
          }
 
@@ -226,7 +229,7 @@ public class EBRouter extends Thread {
 
          publishPending();
       }
-      
+
       waitSet.detach_condition(readCondition);
 
       threadHasComplete = true;

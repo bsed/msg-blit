@@ -136,16 +136,19 @@ void EBRouter::receiveEvents(std::vector<EBEvent> &eventContainer) {
 
       for (unsigned int i = 0; i < transactionSeq.length(); i++) {
 
-         EBEvent event;
-         rcvEventContainer = transactionSeq[i];
+         if (infoSeq[i].valid_data) {
 
-         event.publisherID = rcvEventContainer.publisherID;
-         event.eventID = rcvEventContainer.eventID;
-         event.eventCatType = rcvEventContainer.eventCatType;
-         event.eventDefType = rcvEventContainer.eventDefType;
-         event.eventData = rcvEventContainer.eventData;
+            EBEvent event;
+            rcvEventContainer = transactionSeq[i];
 
-         eventContainer.push_back(event);
+            event.publisherID = rcvEventContainer.publisherID;
+            event.eventID = rcvEventContainer.eventID;
+            event.eventCatType = rcvEventContainer.eventCatType;
+            event.eventDefType = rcvEventContainer.eventDefType;
+            event.eventData = rcvEventContainer.eventData;
+
+            eventContainer.push_back(event);
+         }
       }
    }
 
