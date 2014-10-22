@@ -24,6 +24,7 @@
 #include "KVStore.hpp"
 #include <sys/time.h>
 #include <ByteSwapper.hpp>
+#include <boost/interprocess/sync/scoped_lock.hpp>
 
 KVStore::KVStore(std::string partition, int publisherID) {
 
@@ -54,6 +55,8 @@ bool KVStore::threadIsComplete() {
 
 void KVStore::setInt8Value(std::string key, int8_t value, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    kvsObject.key = key;
@@ -69,6 +72,8 @@ void KVStore::setInt8Value(std::string key, int8_t value, DistType varType) {
 }
 
 int8_t KVStore::getInt8Value(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int8_t value = 0;
 
@@ -94,6 +99,8 @@ int8_t KVStore::getInt8Value(std::string key) {
 
 void KVStore::setInt16Value(std::string key, int16_t value, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    kvsObject.key = key;
@@ -109,6 +116,8 @@ void KVStore::setInt16Value(std::string key, int16_t value, DistType varType) {
 }
 
 int16_t KVStore::getInt16Value(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int16_t value = 0;
 
@@ -134,6 +143,8 @@ int16_t KVStore::getInt16Value(std::string key) {
 
 void KVStore::setInt32Value(std::string key, int32_t value, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    kvsObject.key = key;
@@ -149,6 +160,8 @@ void KVStore::setInt32Value(std::string key, int32_t value, DistType varType) {
 }
 
 int32_t KVStore::getInt32Value(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int32_t value = 0;
 
@@ -174,6 +187,8 @@ int32_t KVStore::getInt32Value(std::string key) {
 
 void KVStore::setInt64Value(std::string key, int64_t value, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    kvsObject.key = key;
@@ -189,6 +204,8 @@ void KVStore::setInt64Value(std::string key, int64_t value, DistType varType) {
 }
 
 int64_t KVStore::getInt64Value(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int64_t value = 0;
 
@@ -214,6 +231,8 @@ int64_t KVStore::getInt64Value(std::string key) {
 
 void KVStore::setFloatValue(std::string key, float value, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    kvsObject.key = key;
@@ -229,6 +248,8 @@ void KVStore::setFloatValue(std::string key, float value, DistType varType) {
 }
 
 float KVStore::getFloatValue(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    float value = 0;
 
@@ -254,6 +275,8 @@ float KVStore::getFloatValue(std::string key) {
 
 void KVStore::setDoubleValue(std::string key, double value, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    kvsObject.key = key;
@@ -269,6 +292,8 @@ void KVStore::setDoubleValue(std::string key, double value, DistType varType) {
 }
 
 double KVStore::getDoubleValue(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    double value = 0;
 
@@ -294,6 +319,8 @@ double KVStore::getDoubleValue(std::string key) {
 
 void KVStore::setBoolValue(std::string key, bool value, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    uint8_t byteValue = (uint8_t)((value == false) ? 0 : 1);
    KVSObject kvsObject;
 
@@ -310,6 +337,8 @@ void KVStore::setBoolValue(std::string key, bool value, DistType varType) {
 }
 
 bool KVStore::getBoolValue(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    bool value = false;
    uint8_t byteValue = 0;
@@ -338,6 +367,8 @@ bool KVStore::getBoolValue(std::string key) {
 void KVStore::setStringValue(std::string key, std::string value,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (value.length() < 1)
@@ -356,6 +387,8 @@ void KVStore::setStringValue(std::string key, std::string value,
 }
 
 std::string KVStore::getStringValue(std::string key) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    std::string value = "";
    char* c_str_value;
@@ -384,6 +417,8 @@ std::string KVStore::getStringValue(std::string key) {
 void KVStore::setByteBufferValue(std::string key, int8_t* byteBuffer,
       int byteBufferLength, DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (byteBufferLength < 1)
@@ -402,6 +437,8 @@ void KVStore::setByteBufferValue(std::string key, int8_t* byteBuffer,
 }
 
 int32_t KVStore::getByteBufferValue(std::string key, int8_t* byteBuffer) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int byteBufferLength = 0;
 
@@ -428,6 +465,8 @@ int32_t KVStore::getByteBufferValue(std::string key, int8_t* byteBuffer) {
 void KVStore::setInt8Array(std::string key, int8_t array[], int arrayLength,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (arrayLength < 1)
@@ -446,6 +485,8 @@ void KVStore::setInt8Array(std::string key, int8_t array[], int arrayLength,
 }
 
 int32_t KVStore::getInt8Array(std::string key, int8_t array[]) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int numberElements = 0;
 
@@ -472,6 +513,8 @@ int32_t KVStore::getInt8Array(std::string key, int8_t array[]) {
 void KVStore::setInt16Array(std::string key, int16_t array[], int arrayLength,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (arrayLength < 1)
@@ -490,6 +533,8 @@ void KVStore::setInt16Array(std::string key, int16_t array[], int arrayLength,
 }
 
 int32_t KVStore::getInt16Array(std::string key, int16_t array[]) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int numberElements = 0;
 
@@ -516,6 +561,8 @@ int32_t KVStore::getInt16Array(std::string key, int16_t array[]) {
 void KVStore::setInt32Array(std::string key, int32_t array[], int arrayLength,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (arrayLength < 1)
@@ -534,6 +581,8 @@ void KVStore::setInt32Array(std::string key, int32_t array[], int arrayLength,
 }
 
 int32_t KVStore::getInt32Array(std::string key, int32_t array[]) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int numberElements = 0;
 
@@ -560,6 +609,8 @@ int32_t KVStore::getInt32Array(std::string key, int32_t array[]) {
 void KVStore::setInt64Array(std::string key, int64_t array[], int arrayLength,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (arrayLength < 1)
@@ -578,6 +629,8 @@ void KVStore::setInt64Array(std::string key, int64_t array[], int arrayLength,
 }
 
 int32_t KVStore::getInt64Array(std::string key, int64_t array[]) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int numberElements = 0;
 
@@ -604,6 +657,8 @@ int32_t KVStore::getInt64Array(std::string key, int64_t array[]) {
 void KVStore::setFloatArray(std::string key, float array[], int arrayLength,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (arrayLength < 1)
@@ -622,6 +677,8 @@ void KVStore::setFloatArray(std::string key, float array[], int arrayLength,
 }
 
 int32_t KVStore::getFloatArray(std::string key, float array[]) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int numberElements = 0;
 
@@ -648,6 +705,8 @@ int32_t KVStore::getFloatArray(std::string key, float array[]) {
 void KVStore::setDoubleArray(std::string key, double array[], int arrayLength,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (arrayLength < 1)
@@ -666,6 +725,8 @@ void KVStore::setDoubleArray(std::string key, double array[], int arrayLength,
 }
 
 int32_t KVStore::getDoubleArray(std::string key, double array[]) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int numberElements = 0;
 
@@ -692,6 +753,8 @@ int32_t KVStore::getDoubleArray(std::string key, double array[]) {
 void KVStore::setBoolArray(std::string key, bool array[], int arrayLength,
       DistType varType) {
 
+   boost::mutex::scoped_lock lock(mutex);
+
    KVSObject kvsObject;
 
    if (arrayLength < 1)
@@ -710,6 +773,8 @@ void KVStore::setBoolArray(std::string key, bool array[], int arrayLength,
 }
 
 int32_t KVStore::getBoolArray(std::string key, bool array[]) {
+
+   boost::mutex::scoped_lock lock(mutex);
 
    int numberElements = 0;
 
@@ -903,7 +968,9 @@ void KVStore::run() {
                         }
                      }
 
+                     mutex.lock();
                      dataStore[kvsObject.key] = kvsObject;
+                     mutex.unlock();
                   }
                }
             }

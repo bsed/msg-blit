@@ -73,7 +73,7 @@ public class KVStore extends Thread {
       return threadHasComplete;
    }
 
-   public void setInt8Value(String key, byte value, DistType varType) {
+   public synchronized void setInt8Value(String key, byte value, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
 
@@ -88,7 +88,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public byte getInt8Value(String key) {
+   public synchronized byte getInt8Value(String key) {
 
       byte value = 0;
 
@@ -112,7 +112,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setInt16Value(String key, short value, DistType varType) {
+   public synchronized void setInt16Value(String key, short value, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
 
@@ -127,7 +127,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public short getInt16Value(String key) {
+   public synchronized short getInt16Value(String key) {
 
       short value = 0;
 
@@ -151,7 +151,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setInt32Value(String key, int value, DistType varType) {
+   public synchronized void setInt32Value(String key, int value, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
 
@@ -166,7 +166,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public int getInt32Value(String key) {
+   public synchronized int getInt32Value(String key) {
 
       int value = 0;
 
@@ -190,7 +190,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setInt64Value(String key, long value, DistType varType) {
+   public synchronized void setInt64Value(String key, long value, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
 
@@ -205,7 +205,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public long getInt64Value(String key) {
+   public synchronized long getInt64Value(String key) {
 
       long value = 0;
 
@@ -229,7 +229,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setFloatValue(String key, float value, DistType varType) {
+   public synchronized void setFloatValue(String key, float value, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
 
@@ -244,7 +244,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public float getFloatValue(String key) {
+   public synchronized float getFloatValue(String key) {
 
       float value = 0;
 
@@ -268,7 +268,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setDoubleValue(String key, double value, DistType varType) {
+   public synchronized void setDoubleValue(String key, double value, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
 
@@ -283,7 +283,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public double getDoubleValue(String key) {
+   public synchronized double getDoubleValue(String key) {
 
       double value = 0;
 
@@ -307,7 +307,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setBoolValue(String key, boolean value, DistType varType) {
+   public synchronized void setBoolValue(String key, boolean value, DistType varType) {
 
       byte byteValue = (byte) ((value == false) ? 0 : 1);
       KVSObject kvsObject = new KVSObject();
@@ -323,7 +323,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public boolean getBoolValue(String key) {
+   public synchronized boolean getBoolValue(String key) {
 
       boolean value = false;
       byte byteValue = 0;
@@ -349,7 +349,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setStringValue(String key, String value, DistType varType) {
+   public synchronized void setStringValue(String key, String value, DistType varType) {
 
       byte[] byteBuffer = null;
       KVSObject kvsObject = new KVSObject();
@@ -373,7 +373,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public String getStringValue(String key) {
+   public synchronized String getStringValue(String key) {
 
       String value = "";
 
@@ -399,7 +399,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setByteBufferValue(String key, byte[] value, DistType varType) {
+   public synchronized void setByteBufferValue(String key, byte[] value, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
 
@@ -417,7 +417,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public byte[] getByteBufferValue(String key) {
+   public synchronized byte[] getByteBufferValue(String key) {
 
       byte[] value = null;
 
@@ -439,7 +439,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setInt8Array(String key, byte[] array, DistType varType) {
+   public synchronized void setInt8Array(String key, byte[] array, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
       ByteBuffer arrayBuffer = ByteBuffer.allocate(array.length * 1);
@@ -460,7 +460,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public byte[] getInt8Array(String key) {
+   public synchronized byte[] getInt8Array(String key) {
 
       byte[] value = null;
 
@@ -488,7 +488,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setInt16Array(String key, short[] array, DistType varType) {
+   public synchronized void setInt16Array(String key, short[] array, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
       ByteBuffer arrayBuffer = ByteBuffer.allocate(array.length * 2);
@@ -509,7 +509,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public short[] getInt16Array(String key) {
+   public synchronized short[] getInt16Array(String key) {
 
       short[] value = null;
 
@@ -537,7 +537,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setInt32Array(String key, int[] array, DistType varType) {
+   public synchronized void setInt32Array(String key, int[] array, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
       ByteBuffer arrayBuffer = ByteBuffer.allocate(array.length * 4);
@@ -558,7 +558,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public int[] getInt32Array(String key) {
+   public synchronized int[] getInt32Array(String key) {
 
       int[] value = null;
 
@@ -586,7 +586,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setInt64Array(String key, long[] array, DistType varType) {
+   public synchronized void setInt64Array(String key, long[] array, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
       ByteBuffer arrayBuffer = ByteBuffer.allocate(array.length * 8);
@@ -607,7 +607,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public long[] getInt64Array(String key) {
+   public synchronized long[] getInt64Array(String key) {
 
       long[] value = null;
 
@@ -635,7 +635,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setFloatArray(String key, float[] array, DistType varType) {
+   public synchronized void setFloatArray(String key, float[] array, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
       ByteBuffer arrayBuffer = ByteBuffer.allocate(array.length * 4);
@@ -656,7 +656,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public float[] getFloatArray(String key) {
+   public synchronized float[] getFloatArray(String key) {
 
       float[] value = null;
 
@@ -684,7 +684,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setDoubleArray(String key, double[] array, DistType varType) {
+   public synchronized void setDoubleArray(String key, double[] array, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
       ByteBuffer arrayBuffer = ByteBuffer.allocate(array.length * 8);
@@ -705,7 +705,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public double[] getDoubleArray(String key) {
+   public synchronized double[] getDoubleArray(String key) {
 
       double[] value = null;
 
@@ -733,7 +733,7 @@ public class KVStore extends Thread {
       return value;
    }
 
-   public void setBoolArray(String key, boolean[] array, DistType varType) {
+   public synchronized void setBoolArray(String key, boolean[] array, DistType varType) {
 
       KVSObject kvsObject = new KVSObject();
       ByteBuffer arrayBuffer = ByteBuffer.allocate(array.length * 1);
@@ -756,7 +756,7 @@ public class KVStore extends Thread {
          pubQueue.add(kvsObject);
    }
 
-   public boolean[] getBoolArray(String key) {
+   public synchronized boolean[] getBoolArray(String key) {
 
       boolean[] value = null;
 
@@ -965,8 +965,9 @@ public class KVStore extends Thread {
 
                            }
                         }
-
-                        dataStore.put(kvsObject.key, kvsObject);
+                        synchronized(this) {
+                           dataStore.put(kvsObject.key, kvsObject);
+                        }
                      }
                   }
                }

@@ -28,6 +28,7 @@
 #include <DDSKVStore/DDSKVStore.h>
 #include <DDSKVStore/ccpp_DDSKVStore.h>
 #include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 #include <KVSObject.hpp>
 #include <SharedQueue.hpp>
 
@@ -138,6 +139,7 @@ private:
    DDSKVStore::ARCH_Info systemByteOrder;
    SharedQueue<KVSObject> pubQueue;
    std::map<std::string, KVSObject> dataStore;
+   boost::mutex mutex;
 };
 
 #endif /* KV_STORE_HPP_ */
