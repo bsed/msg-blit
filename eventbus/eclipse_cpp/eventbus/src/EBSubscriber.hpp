@@ -32,9 +32,7 @@ public:
 
    virtual void sinkEvent(EBEvent event) = 0;
 
-   virtual ~EBSubscriber() {
-   }
-   ;
+   virtual ~EBSubscriber() { }
 };
 
 #endif /* EB_SUBSCRIBER_HPP_ */

@@ -34,13 +34,11 @@ KVStore::KVStore(std::string partition, int publisherID) {
    systemByteOrder = DDSKVStore::ARCH_LITTLE_ENDIAN;
    this->partition = partition;
    this->publisherID = publisherID;
-
-   init();
 }
 
 void KVStore::start() {
 
-   kvStoreThread = boost::thread(&KVStore::run, this);
+   kvStoreThread = new boost::thread(boost::bind(&KVStore::run, this));
 }
 
 void KVStore::shutdownReq() {
@@ -376,8 +374,8 @@ void KVStore::setStringValue(std::string key, std::string value,
 
    kvsObject.key = key;
    kvsObject.typeInfo = DDSKVStore::TYPE_STRING;
-   kvsObject.numberElements = value.length();
-   kvsObject.byteBuffer.resize(value.length());
+   kvsObject.numberElements = value.length() + 1;
+   kvsObject.byteBuffer.resize(value.length() + 1);
    memcpy(&kvsObject.byteBuffer[0], value.c_str(), value.length());
 
    dataStore[key] = kvsObject;
@@ -406,7 +404,7 @@ std::string KVStore::getStringValue(std::string key) {
          }
 
          c_str_value = (char *) &kvsObject.byteBuffer[0];
-         c_str_value[kvsObject.numberElements] = '\0';
+         c_str_value[(kvsObject.numberElements-1)] = '\0';
          value = std::string(c_str_value);
       }
    }
@@ -878,10 +876,6 @@ void KVStore::init() {
    // Create Readcondition
    readCondition = dataReader->create_readcondition(DDS::ANY_SAMPLE_STATE,
          DDS::ANY_VIEW_STATE, DDS::ALIVE_INSTANCE_STATE);
-
-   // Create Waitset
-   waitSet = new DDS::WaitSet();
-   waitSet->attach_condition(readCondition);
 }
 
 void KVStore::run() {
@@ -889,12 +883,11 @@ void KVStore::run() {
    DDSKVStore::TransactionSeq transactionSeq;
    DDSKVStore::Transaction rcvTransaction;
    DDS::SampleInfoSeq infoSeq;
-   DDS::ConditionSeq condSeq;
-   DDS::Duration_t waitTimeout = { 0, 30000000 };
+
+   init();
 
    while (!shutdownRequested) {
 
-      waitSet->wait(condSeq, waitTimeout);
       transactionDataReader->take_w_condition(transactionSeq, infoSeq,
             DDS::LENGTH_UNLIMITED, readCondition);
 
@@ -980,10 +973,9 @@ void KVStore::run() {
       transactionDataReader->return_loan(transactionSeq, infoSeq);
 
       publishPending();
-   }
 
-   waitSet->detach_condition(readCondition);
-   waitSet = 0;
+      boost::this_thread::sleep(boost::posix_time::milliseconds(30));
+   }
 
    threadHasComplete = true;
 }

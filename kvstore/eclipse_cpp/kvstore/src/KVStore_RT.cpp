@@ -325,8 +325,8 @@ void KVStore::setStringValue(std::string key, std::string value,
 
    kvsObject.key = key;
    kvsObject.typeInfo = DDSKVStore::TYPE_STRING;
-   kvsObject.numberElements = value.length();
-   kvsObject.byteBuffer.resize(value.length());
+   kvsObject.numberElements = value.length() + 1;
+   kvsObject.byteBuffer.resize(value.length() + 1);
    memcpy(&kvsObject.byteBuffer[0], value.c_str(), value.length());
 
    dataStore[key] = kvsObject;
@@ -353,7 +353,7 @@ std::string KVStore::getStringValue(std::string key) {
          }
 
          c_str_value = (char *) &kvsObject.byteBuffer[0];
-         c_str_value[kvsObject.numberElements] = '\0';
+         c_str_value[(kvsObject.numberElements-1)] = '\0';
          value = std::string(c_str_value);
       }
    }
@@ -801,7 +801,6 @@ void KVStore::receiveUpdates() {
    DDSKVStore::TransactionSeq transactionSeq;
    DDSKVStore::Transaction rcvTransaction;
    DDS::SampleInfoSeq infoSeq;
-   DDS::ConditionSeq condSeq;
 
    transactionDataReader->take_w_condition(transactionSeq, infoSeq,
          DDS::LENGTH_UNLIMITED, readCondition);

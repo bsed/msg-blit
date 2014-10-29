@@ -52,8 +52,8 @@ private:
    DDS::DataReader_ptr dataReader;
    DDS::ReadCondition_ptr readCondition;
 
-   DDSEventChannel::EventContainerDataReader_ptr transactionDataReader;
-   DDSEventChannel::EventContainerDataWriter_ptr transactionDataWriter;
+   DDSEventChannel::EventContainerDataReader_ptr eventContainerDataReader;
+   DDSEventChannel::EventContainerDataWriter_ptr eventContainerDataWriter;
    DDSEventChannel::EventContainer pubEventContainer;
 
    std::string partition;

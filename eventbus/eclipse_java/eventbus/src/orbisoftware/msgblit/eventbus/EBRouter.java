@@ -50,8 +50,6 @@ public class EBRouter extends Thread {
 
       this.partition = partition;
       this.publisherID = publisherID;
-
-      init();
    }
 
    // Add event subscriber
@@ -167,52 +165,47 @@ public class EBRouter extends Thread {
       // Create Datareader
       dataReader = subscriber.create_datareader(topic, drQos.value, null,
             DDS.STATUS_MASK_NONE.value);
-      transactionDataReader = DDSEventChannel.EventContainerDataReaderHelper
+      eventContainerDataReader = DDSEventChannel.EventContainerDataReaderHelper
             .narrow(dataReader);
 
       if (dataReader == null)
          System.err.println("ERROR: DDS Connection failed");
 
       // Create Datawriter
-      transactionDataWriter = DDSEventChannel.EventContainerDataWriterHelper
+      eventContainerDataWriter = DDSEventChannel.EventContainerDataWriterHelper
             .narrow(publisher.create_datawriter(topic, dwQos.value, null,
                   DDS.STATUS_MASK_NONE.value));
 
-      if (transactionDataWriter == null)
+      if (eventContainerDataWriter == null)
          System.err.println("ERROR: DDS Connection failed");
 
       // Create Readcondition
       readCondition = dataReader.create_readcondition(
             DDS.ANY_SAMPLE_STATE.value, DDS.ANY_VIEW_STATE.value,
             DDS.ALIVE_INSTANCE_STATE.value);
-
-      // Create Waitset
-      waitSet = new DDS.WaitSet();
-      waitSet.attach_condition(readCondition);
    }
 
    public void run() {
 
-      DDSEventChannel.EventContainerSeqHolder eventSeqHolder = new DDSEventChannel.EventContainerSeqHolder();
+      DDSEventChannel.EventContainerSeqHolder eventContainerSeq = new DDSEventChannel.EventContainerSeqHolder();
       DDSEventChannel.EventContainer rcvEventContainer;
       DDS.SampleInfoSeqHolder infoSeq = new DDS.SampleInfoSeqHolder();
-      DDS.ConditionSeqHolder condSeqHolder = new DDS.ConditionSeqHolder();
-      DDS.Duration_t waitTimeout = new DDS.Duration_t(0, 30000000);
+
+      init();
 
       while (!shutdownRequested) {
 
-         waitSet._wait(condSeqHolder, waitTimeout);
-         transactionDataReader.take_w_condition(eventSeqHolder, infoSeq,
+         eventContainerDataReader.take_w_condition(eventContainerSeq, infoSeq,
                DDS.LENGTH_UNLIMITED.value, readCondition);
 
          if (infoSeq.value != null && infoSeq.value.length > 0) {
 
-            for (int i = 0; i < eventSeqHolder.value.length; i++) {
+            for (int i = 0; i < eventContainerSeq.value.length; i++) {
 
                if (infoSeq.value[i].valid_data) {
 
                   EBEvent event = new EBEvent();
-                  rcvEventContainer = eventSeqHolder.value[i];
+                  rcvEventContainer = eventContainerSeq.value[i];
 
                   event.publisherID = rcvEventContainer.publisherID;
                   event.eventID = rcvEventContainer.eventID;
@@ -225,12 +218,14 @@ public class EBRouter extends Thread {
             }
          }
 
-         transactionDataReader.return_loan(eventSeqHolder, infoSeq);
+         eventContainerDataReader.return_loan(eventContainerSeq, infoSeq);
 
          publishPending();
+         
+         try {
+            Thread.sleep(30);
+         } catch (InterruptedException ex) { }
       }
-
-      waitSet.detach_condition(readCondition);
 
       threadHasComplete = true;
    }
@@ -261,7 +256,7 @@ public class EBRouter extends Thread {
                pubEventContainer.eventDefType = event.eventDefType;
                pubEventContainer.eventData = event.eventData;
 
-               transactionDataWriter.write(pubEventContainer,
+               eventContainerDataWriter.write(pubEventContainer,
                      DDS.HANDLE_NIL.value);
             }
          }
@@ -270,10 +265,9 @@ public class EBRouter extends Thread {
 
    private DDS.DataReader dataReader;
    private DDS.ReadCondition readCondition;
-   private DDS.WaitSet waitSet;
 
-   private DDSEventChannel.EventContainerDataReader transactionDataReader;
-   private DDSEventChannel.EventContainerDataWriter transactionDataWriter;
+   private DDSEventChannel.EventContainerDataReader eventContainerDataReader;
+   private DDSEventChannel.EventContainerDataWriter eventContainerDataWriter;
    private DDSEventChannel.EventContainer pubEventContainer;
 
    private boolean shutdownRequested;

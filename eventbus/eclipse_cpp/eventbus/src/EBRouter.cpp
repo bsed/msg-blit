@@ -31,8 +31,6 @@ EBRouter::EBRouter(std::string partition, int publisherID) {
 
    this->partition = partition;
    this->publisherID = publisherID;
-
-   init();
 }
 
 // Add event subscriber
@@ -63,7 +61,7 @@ void EBRouter::publishEvent(EBEvent &event, DistType distType) {
 
 void EBRouter::start() {
 
-   ebRouterThread = boost::thread(&EBRouter::run, this);
+   ebRouterThread = new boost::thread(boost::bind(&EBRouter::run, this));
 }
 
 void EBRouter::shutdownReq() {
@@ -140,50 +138,45 @@ void EBRouter::init() {
    // Create Datareader
    dataReader = subscriber->create_datareader(topic, drQos, NULL,
          DDS::STATUS_MASK_NONE);
-   transactionDataReader = DDSEventChannel::EventContainerDataReader::_narrow(
+   eventContainerDataReader = DDSEventChannel::EventContainerDataReader::_narrow(
          dataReader);
 
    if (dataReader == NULL)
       std::cout << "ERROR: DDS Connection failed" << std::endl;
 
    // Create Datawriter
-   transactionDataWriter = DDSEventChannel::EventContainerDataWriter::_narrow(
+   eventContainerDataWriter = DDSEventChannel::EventContainerDataWriter::_narrow(
          publisher->create_datawriter(topic, dwQos, NULL,
                DDS::STATUS_MASK_NONE));
-   if (transactionDataWriter == NULL)
+   if (eventContainerDataWriter == NULL)
       std::cout << "ERROR: DDS Connection failed" << std::endl;
 
    // Create Readcondition
    readCondition = dataReader->create_readcondition(DDS::ANY_SAMPLE_STATE,
          DDS::ANY_VIEW_STATE, DDS::ALIVE_INSTANCE_STATE);
-
-   // Create Waitset
-   waitSet = new DDS::WaitSet();
-   waitSet->attach_condition(readCondition);
 }
 
 void EBRouter::run() {
 
-   DDSEventChannel::EventContainerSeq transactionSeq;
+   DDSEventChannel::EventContainerSeq eventContainerSeq;
    DDSEventChannel::EventContainer rcvEventContainer;
    DDS::SampleInfoSeq infoSeq;
-   DDS::ConditionSeq condSeq;
-   DDS::Duration_t waitTimeout = { 0, 30000000 };
+
+   init();
 
    while (!shutdownRequested) {
 
-      waitSet->wait(condSeq, waitTimeout);
-      transactionDataReader->take_w_condition(transactionSeq, infoSeq,
+      eventContainerDataReader->take_w_condition(eventContainerSeq, infoSeq,
             DDS::LENGTH_UNLIMITED, readCondition);
 
       if (infoSeq.length() > 0) {
 
-         for (unsigned int i = 0; i < transactionSeq.length(); i++) {
+         for (unsigned int i = 0; i < eventContainerSeq.length(); i++) {
 
             if (infoSeq[i].valid_data) {
 
                EBEvent event;
-               rcvEventContainer = transactionSeq[i];
+               rcvEventContainer = eventContainerSeq[i];
 
                event.publisherID = rcvEventContainer.publisherID;
                event.eventID = rcvEventContainer.eventID;
@@ -196,13 +189,12 @@ void EBRouter::run() {
          }
       }
 
-      transactionDataReader->return_loan(transactionSeq, infoSeq);
+      eventContainerDataReader->return_loan(eventContainerSeq, infoSeq);
 
       publishPending();
-   }
 
-   waitSet->detach_condition(readCondition);
-   waitSet = 0;
+      boost::this_thread::sleep(boost::posix_time::milliseconds(30));
+   }
 
    threadHasComplete = true;
 }
@@ -234,7 +226,7 @@ void EBRouter::publishPending() {
             pubEventContainer.eventDefType = event.eventDefType;
             pubEventContainer.eventData = event.eventData.c_str();
 
-            transactionDataWriter->write(pubEventContainer, DDS::HANDLE_NIL);
+            eventContainerDataWriter->write(pubEventContainer, DDS::HANDLE_NIL);
          }
       }
    }

@@ -73,14 +73,13 @@ private:
    void notifySubscribers(EBEvent &event);
    void publishPending();
 
-   boost::thread ebRouterThread;
+   boost::thread* ebRouterThread;
 
    DDS::DataReader_ptr dataReader;
    DDS::ReadCondition_ptr readCondition;
-   DDS::WaitSet_var waitSet;
 
-   DDSEventChannel::EventContainerDataReader_ptr transactionDataReader;
-   DDSEventChannel::EventContainerDataWriter_ptr transactionDataWriter;
+   DDSEventChannel::EventContainerDataReader_ptr eventContainerDataReader;
+   DDSEventChannel::EventContainerDataWriter_ptr eventContainerDataWriter;
    DDSEventChannel::EventContainer pubEventContainer;
 
    bool shutdownRequested;

@@ -38,7 +38,7 @@ void EBRouter::publishEvent(EBEvent &event) {
    pubEventContainer.eventDefType = event.eventDefType;
    pubEventContainer.eventData = event.eventData.c_str();
 
-   transactionDataWriter->write(pubEventContainer, DDS::HANDLE_NIL);
+   eventContainerDataWriter->write(pubEventContainer, DDS::HANDLE_NIL);
 }
 
 void EBRouter::init() {
@@ -105,17 +105,17 @@ void EBRouter::init() {
    // Create Datareader
    dataReader = subscriber->create_datareader(topic, drQos, NULL,
          DDS::STATUS_MASK_NONE);
-   transactionDataReader = DDSEventChannel::EventContainerDataReader::_narrow(
+   eventContainerDataReader = DDSEventChannel::EventContainerDataReader::_narrow(
          dataReader);
 
    if (dataReader == NULL)
       std::cout << "ERROR: DDS Connection failed" << std::endl;
 
    // Create Datawriter
-   transactionDataWriter = DDSEventChannel::EventContainerDataWriter::_narrow(
+   eventContainerDataWriter = DDSEventChannel::EventContainerDataWriter::_narrow(
          publisher->create_datawriter(topic, dwQos, NULL,
                DDS::STATUS_MASK_NONE));
-   if (transactionDataWriter == NULL)
+   if (eventContainerDataWriter == NULL)
       std::cout << "ERROR: DDS Connection failed" << std::endl;
 
    // Create Readcondition
@@ -125,22 +125,21 @@ void EBRouter::init() {
 
 void EBRouter::receiveEvents(std::vector<EBEvent> &eventContainer) {
 
-   DDSEventChannel::EventContainerSeq transactionSeq;
+   DDSEventChannel::EventContainerSeq eventContainerSeq;
    DDSEventChannel::EventContainer rcvEventContainer;
    DDS::SampleInfoSeq infoSeq;
-   DDS::ConditionSeq condSeq;
 
-   transactionDataReader->take_w_condition(transactionSeq, infoSeq,
+   eventContainerDataReader->take_w_condition(eventContainerSeq, infoSeq,
          DDS::LENGTH_UNLIMITED, readCondition);
 
    if (infoSeq.length() > 0) {
 
-      for (unsigned int i = 0; i < transactionSeq.length(); i++) {
+      for (unsigned int i = 0; i < eventContainerSeq.length(); i++) {
 
          if (infoSeq[i].valid_data) {
 
             EBEvent event;
-            rcvEventContainer = transactionSeq[i];
+            rcvEventContainer = eventContainerSeq[i];
 
             event.publisherID = rcvEventContainer.publisherID;
             event.eventID = rcvEventContainer.eventID;
@@ -153,5 +152,5 @@ void EBRouter::receiveEvents(std::vector<EBEvent> &eventContainer) {
       }
    }
 
-   transactionDataReader->return_loan(transactionSeq, infoSeq);
+   eventContainerDataReader->return_loan(eventContainerSeq, infoSeq);
 }

@@ -121,11 +121,10 @@ private:
    void run();
    void publishPending();
 
-   boost::thread kvStoreThread;
+   boost::thread* kvStoreThread;
 
    DDS::DataReader_ptr dataReader;
    DDS::ReadCondition_ptr readCondition;
-   DDS::WaitSet_var waitSet;
 
    DDSKVStore::TransactionDataReader_ptr transactionDataReader;
    DDSKVStore::TransactionDataWriter_ptr transactionDataWriter;

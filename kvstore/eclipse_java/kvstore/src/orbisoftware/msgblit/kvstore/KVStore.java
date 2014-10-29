@@ -57,8 +57,6 @@ public class KVStore extends Thread {
       systemByteOrder = ARCH_Info.ARCH_BIG_ENDIAN;
       this.partition = partition;
       this.publisherID = publisherID;
-
-      init();
    }
 
    // Shutdown request
@@ -877,33 +875,28 @@ public class KVStore extends Thread {
       readCondition = dataReader.create_readcondition(
             DDS.ANY_SAMPLE_STATE.value, DDS.ANY_VIEW_STATE.value,
             DDS.ALIVE_INSTANCE_STATE.value);
-
-      // Create Waitset
-      waitSet = new DDS.WaitSet();
-      waitSet.attach_condition(readCondition);
    }
 
    public void run() {
 
-      DDSKVStore.TransactionSeqHolder transactionSeqHolder = new DDSKVStore.TransactionSeqHolder();
+      DDSKVStore.TransactionSeqHolder transactionSeq = new DDSKVStore.TransactionSeqHolder();
       DDSKVStore.Transaction rcvTransaction;
       DDS.SampleInfoSeqHolder infoSeq = new DDS.SampleInfoSeqHolder();
-      DDS.ConditionSeqHolder condSeqHolder = new DDS.ConditionSeqHolder();
-      DDS.Duration_t waitTimeout = new DDS.Duration_t(0, 30000000);
+
+      init();
 
       while (!shutdownRequested) {
 
-         waitSet._wait(condSeqHolder, waitTimeout);
-         transactionDataReader.take_w_condition(transactionSeqHolder, infoSeq,
+         transactionDataReader.take_w_condition(transactionSeq, infoSeq,
                DDS.LENGTH_UNLIMITED.value, readCondition);
 
          if (infoSeq.value != null && infoSeq.value.length > 0) {
 
-            for (int i = 0; i < transactionSeqHolder.value.length; i++) {
+            for (int i = 0; i < transactionSeq.value.length; i++) {
 
                if (infoSeq.value[i].valid_data) {
 
-                  rcvTransaction = transactionSeqHolder.value[i];
+                  rcvTransaction = transactionSeq.value[i];
 
                   // Only update the dataStore from transactions originating
                   // from other kvstore publishers
@@ -974,12 +967,14 @@ public class KVStore extends Thread {
             }
          }
 
-         transactionDataReader.return_loan(transactionSeqHolder, infoSeq);
+         transactionDataReader.return_loan(transactionSeq, infoSeq);
 
          publishPending();
+         
+         try {
+            Thread.sleep(30);
+         } catch (InterruptedException ex) { }
       }
-
-      waitSet.detach_condition(readCondition);
 
       threadHasComplete = true;
    }
@@ -1019,7 +1014,6 @@ public class KVStore extends Thread {
 
    private DDS.DataReader dataReader;
    private DDS.ReadCondition readCondition;
-   private DDS.WaitSet waitSet;
 
    private DDSKVStore.TransactionDataReader transactionDataReader;
    private DDSKVStore.TransactionDataWriter transactionDataWriter;
